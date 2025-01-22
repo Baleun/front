@@ -17,42 +17,6 @@
   .camera-feed {
     margin: 16px;
     border-radius: 16px;
-    width: 468px;
-    height: 300px;
-  }
-  
-  .logo {
-    position: absolute;
-    width: 128px;
-    bottom: 16px;
-    left: 16px;
-  }
-  
-  .url {
-    margin: 16px;
-    margin-bottom: 0px;
-    border-radius: 16px;
-    padding: 0 16px;
-    width: 436px;
-    height: 32px;
-    border: 2px dashed #ccc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: aliceblue;
-  }
-  
-  .dropzone {
-    margin: 16px;
-    margin-bottom: 0px;
-    border-radius: 16px;
-    padding: 0 16px;
-    width: 436px;
-    height: 32px;
-    border: 2px dashed #ccc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: aliceblue;
-    cursor: pointer;
+    width: 0px;
+    height: 0px;
   }

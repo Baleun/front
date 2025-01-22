@@ -61,7 +61,7 @@ function Avatar({ url }: { url: string }) {
 }
 
 function App() {
-  const [url, setUrl] = useState<string>("https://models.readyplayer.me/64f0265b1db75f90dcfd9e2c.glb");
+  const [url, setUrl] = useState<string>("https://models.readyplayer.me/64f0265b1db75f90dcfd9e2c.glb?morphTargets=ARKit&textureAtlas=1024");
   const { getRootProps } = useDropzone({
     onDrop: files => {
       const file = files[0];
@@ -116,10 +116,10 @@ function App() {
     <div className="App">
       <video className='camera-feed' id="video" autoPlay></video>
       <Canvas style={{ height: 600 }} camera={{ fov: 25 }} shadows>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} color={new Color(1, 1, 0)} intensity={0.5} castShadow />
-        <pointLight position={[-10, 0, 10]} color={new Color(1, 0, 0)} intensity={0.5} castShadow />
-        <pointLight position={[0, 0, 10]} intensity={0.5} castShadow />
+        <ambientLight intensity={1.0} />
+        <pointLight position={[10, 10, 10]} color={new Color(1, 1, 0)} intensity={1.0} castShadow />
+        <pointLight position={[-10, 0, 10]} color={new Color(1, 0, 0)} intensity={1.0} castShadow />
+        <pointLight position={[0, 0, 10]} intensity={1.0} castShadow />
         <Avatar url={url} />
       </Canvas>
     </div>
