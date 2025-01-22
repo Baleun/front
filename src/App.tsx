@@ -6,9 +6,6 @@ import { Color, Euler, Matrix4 } from 'three';
 import { Canvas, useFrame, useGraph } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { useDropzone } from 'react-dropzone';
-import { Hands, HandsOptions } from "@mediapipe/hands";
-import { Pose, PoseOptions } from "@mediapipe/pose";
-import { Desk } from './components/Desk';
 
 let video: HTMLVideoElement;
 let faceLandmarker: FaceLandmarker;
@@ -16,9 +13,6 @@ let lastVideoTime = -1;
 let blendshapes: any[] = [];
 let rotation: Euler;
 let headMesh: any[] = [];
-let hands: Hands;
-let pose: Pose;
-let handMeshes: any[] = [];
 let bodyRotation: Euler; 
 
 const options: FaceLandmarkerOptions = {
@@ -32,20 +26,6 @@ const options: FaceLandmarkerOptions = {
   outputFacialTransformationMatrixes: true,
 };
 
-const handsOptions: HandsOptions = {
-  maxNumHands: 2,
-  minDetectionConfidence: 0.7,
-  minTrackingConfidence: 0.5,
-};
-
-const poseOptions: PoseOptions = {
-  modelComplexity: 1,
-  smoothLandmarks: true,
-  enableSegmentation: false,
-  minDetectionConfidence: 0.5,
-  minTrackingConfidence: 0.5,
-};
-
 function Avatar({ url }: { url: string }) {
   const { scene } = useGLTF(url);
   const { nodes } = useGraph(scene);
@@ -56,8 +36,6 @@ function Avatar({ url }: { url: string }) {
     if (nodes.Wolf3D_Beard) headMesh.push(nodes.Wolf3D_Beard);
     if (nodes.Wolf3D_Avatar) headMesh.push(nodes.Wolf3D_Avatar);
     if (nodes.Wolf3D_Head_Custom) headMesh.push(nodes.Wolf3D_Head_Custom);
-    if (nodes.Wolf3D_Left_Hand) handMeshes.push(nodes.Wolf3D_Left_Hand);
-    if (nodes.Wolf3D_Right_Hand) handMeshes.push(nodes.Wolf3D_Right_Hand);
   }, [nodes, url]);
 
   useFrame(() => {
@@ -75,17 +53,7 @@ function Avatar({ url }: { url: string }) {
       nodes.Neck.rotation.set(rotation.x / 5 + 0.3, rotation.y / 5, rotation.z / 5);
       nodes.Spine2.rotation.set(rotation.x / 10, rotation.y / 10, rotation.z / 10);
 
-      handMeshes.forEach((mesh, index) => {
-        if (handsLandmarks && handsLandmarks[index]) {
-          const hand = handsLandmarks[index];
-          mesh.rotation.set(hand.rotation.x, hand.rotation.y, hand.rotation.z);
-          mesh.position.set(hand.position.x, hand.position.y, hand.position.z);
-        }
-      });
 
-      if (bodyLandmarks) {
-        nodes.Spine.rotation.set(bodyRotation.x, bodyRotation.y, bodyRotation.z);
-      }
     }
   });
 
@@ -117,23 +85,6 @@ function App() {
       video.srcObject = stream;
       video.addEventListener("loadeddata", predict);
     });
-
-    hands = new Hands(handsOptions);
-    pose = new Pose(poseOptions);
-
-    hands.onResults(onHandsResults);
-    pose.onResults(onPoseResults);
-  }
-
-  const onHandsResults = (results: any) => {
-    handsLandmarks = results.multiHandLandmarks;
-  }
-
-  const onPoseResults = (results: any) => {
-    bodyLandmarks = results.poseLandmarks;
-    if (bodyLandmarks) {
-      bodyRotation = new Euler().setFromRotationMatrix(new Matrix4().fromArray(bodyLandmarks[0].data));
-    }
   }
 
   const predict = async () => {
@@ -149,9 +100,6 @@ function App() {
         rotation = new Euler().setFromRotationMatrix(matrix);
       }
     }
-
-    hands.send({ image: video });
-    pose.send({ image: video });
 
     window.requestAnimationFrame(predict);
   }
